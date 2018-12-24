@@ -16,11 +16,14 @@ import java.net.InetSocketAddress;
 public class GatewayClient {
     private final String host;
     private final int port;
+    public static int count = 0;
 
     public GatewayClient(String host, int port){
         this.host = host;
         this.port = port;
+        this.count ++;
     }
+
 
     public void start() throws Exception{
         EventLoopGroup group = new NioEventLoopGroup();
@@ -67,6 +70,6 @@ public class GatewayClient {
     }
 
     public static void main(String args[]) throws Exception{
-        new GatewayClient("smart.gantch.cn",8090).start();
+            new GatewayClient("smart.gantch.cn", 8090).start();
     }
 }

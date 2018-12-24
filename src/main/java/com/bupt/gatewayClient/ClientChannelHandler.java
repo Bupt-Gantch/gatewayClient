@@ -4,6 +4,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.util.Arrays;
+import java.util.Random;
 
 public class ClientChannelHandler extends SimpleChannelInboundHandler<byte[]> {
     @Override
@@ -16,13 +17,19 @@ public class ClientChannelHandler extends SimpleChannelInboundHandler<byte[]> {
         byte A3 = bytes[2];
         if(A3 == 80){
             System.out.println(Arrays.toString(bytes));
-            String name = "10002";
+
+            String name = getRandomStr(); // TODO 每次启动会变化
             String password = "xxxx";
             byte[] msg = new byte[name.length()+ password.length()+1];
             System.arraycopy(name.getBytes(),0, msg, 0, name.length());
             msg[name.length()] = 0x20;
             System.arraycopy(password.getBytes(), 0 , bytes, name.length()+1,password.length());
             channelHandlerContext.channel().writeAndFlush(getSendContent(81, msg));
+            System.out.println(String.format("gateway_%s started!", name));
+        }
+        if (GatewayClient.count < 500 ){
+            System.out.println(String.format("########  number %d gateway  ########", GatewayClient.count));
+            new GatewayClient("smart.gantch.cn", 8090).start();
         }
     }
 
@@ -51,5 +58,14 @@ public class ClientChannelHandler extends SimpleChannelInboundHandler<byte[]> {
         System.arraycopy(headMessage, 0, sendContent, 0, 6);
         System.arraycopy(message, 0, sendContent, 6, messageLength);
         return sendContent;
+    }
+
+    public String getRandomStr(){
+        String rand = "99";
+        int n = new Random().nextInt(9999);
+        if (n < 1000)
+            n += 1000;
+        rand += n;
+        return rand;
     }
 }
