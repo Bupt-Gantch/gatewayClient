@@ -11,7 +11,7 @@ public class OutBoundHandler extends ChannelOutboundHandlerAdapter {
 		if (msg instanceof byte[]) {
 			byte[] bytesWrite = (byte[])msg;
 			ByteBuf buf = ctx.alloc().buffer(bytesWrite.length); 
-			System.out.println("" + GatewayClient.bytesToHexString(bytesWrite));
+			System.out.println("send bytes:" + GatewayClient.bytesToHexString(bytesWrite));
 			buf.writeBytes(bytesWrite); 
 			ctx.writeAndFlush(buf).addListener(new ChannelFutureListener(){  
                 @Override  

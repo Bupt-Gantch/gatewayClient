@@ -14,11 +14,11 @@ public class ClientChannelHandler extends SimpleChannelInboundHandler<byte[]> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, byte[] bytes) throws Exception {
+        System.out.println("channel received:" + GatewayClient.bytesToHexString(bytes));
         byte A3 = bytes[2];
         if(A3 == 80){
-            System.out.println(Arrays.toString(bytes));
-
-            String name = getRandomStr(); // TODO 每次启动会变化
+//            String name = getRandomStr();
+            String name = "5153054"; // 智慧管廊
             String password = "xxxx";
             byte[] msg = new byte[name.length()+ password.length()+1];
             System.arraycopy(name.getBytes(),0, msg, 0, name.length());
@@ -26,11 +26,24 @@ public class ClientChannelHandler extends SimpleChannelInboundHandler<byte[]> {
             System.arraycopy(password.getBytes(), 0 , bytes, name.length()+1,password.length());
             channelHandlerContext.channel().writeAndFlush(getSendContent(81, msg));
             System.out.println(String.format("gateway_%s started!", name));
+
+        } else if (A3 == 31) {
+            byte[] data = getHeartBeatBytes();
+            channelHandlerContext.channel().writeAndFlush(getSendContent(30, data));
+            System.out.println("heart beat message");
+
+        } else if (bytes[7] == 0x81){  // 服务端消息
+            byte[] data = getInfraredResponse();
+            channelHandlerContext.channel().writeAndFlush(getSendContent(11, data));
+            System.out.println("infrared learn replyd");
+
         }
-        if (GatewayClient.count < 500 ){
-            System.out.println(String.format("########  number %d gateway  ########", GatewayClient.count));
-            new GatewayClient("smart.gantch.cn", 8090).start();
-        }
+
+        // 模拟网关客户端的数量
+//        if (GatewayClient.count < 500 ){
+//            System.out.println(String.format("########  number %d gateway  ########", GatewayClient.count));
+//            new GatewayClient("smart.gantch.cn", 8090).start();
+//        }
     }
 
     public static byte[] getSendContent(int type, byte[] message) {
@@ -67,5 +80,16 @@ public class ClientChannelHandler extends SimpleChannelInboundHandler<byte[]> {
             n += 1000;
         rand += n;
         return rand;
+    }
+
+    public byte[] getHeartBeatBytes(){
+        byte[] bytes = new byte[]{0x04, 0x00, 0x1E, 0x00};
+        return bytes;
+     }
+
+
+    public byte[] getInfraredResponse() {
+        byte[] bytes = new byte[]{0x70, 0x1A, (byte) 0x94, 0x56, 0x01, 0x00, 0x00, 0x01, 0x0A, 0x40, 0x42, 0x10, 0x55, 0x55, 0x0C, (byte) 0xE2, 0x07, 0x01, 0x04, 0x00, 0x00, (byte) 0x83, 0x00, 0x01, 0x5B, 0x02, 0x00, (byte) 0xDB};
+        return bytes;
     }
 }

@@ -43,6 +43,7 @@ public class GatewayClient {
                         }
                     });
             ChannelFuture f = b.connect().sync();
+            b.bind(8808).sync();
             f.channel().closeFuture().sync();
         }catch (Exception e) {
             e.printStackTrace();
@@ -70,6 +71,6 @@ public class GatewayClient {
     }
 
     public static void main(String args[]) throws Exception{
-            new GatewayClient("smart.gantch.cn", 8090).start();
+            new GatewayClient("localhost", 8090).start();
     }
 }
