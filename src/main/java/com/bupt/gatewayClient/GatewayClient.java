@@ -3,6 +3,7 @@ package com.bupt.gatewayClient;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -42,8 +43,11 @@ public class GatewayClient {
                             ch.pipeline().addLast(new IdleStateHandler(0,0,300), new ClientChannelHandler());
                         }
                     });
+            // 有数据立即发送
+            b.option(ChannelOption.TCP_NODELAY, true);
+            // 保持连接
+            b.option(ChannelOption.SO_KEEPALIVE, true);
             ChannelFuture f = b.connect().sync();
-            b.bind(8808).sync();
             f.channel().closeFuture().sync();
         }catch (Exception e) {
             e.printStackTrace();
