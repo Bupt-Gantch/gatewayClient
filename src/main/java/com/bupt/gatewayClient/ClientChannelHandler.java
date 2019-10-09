@@ -53,11 +53,12 @@ public class ClientChannelHandler extends SimpleChannelInboundHandler<byte[]> {
         } else if (B3 == 31) {
             System.out.println("received heart beat response");
 
-        } else if (B3 == 10){
+        } else if (B3 == 10){ // 网关登录认证成功，开始定时发送心跳
             ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-            service.scheduleAtFixedRate(new HeartBeat(channelHandlerContext) , 1, 5, TimeUnit.SECONDS);
+            // initialDelay: 延时启动, period: 时间间隔, unit: 前两个参数的单位
+            service.scheduleAtFixedRate(new HeartBeat(channelHandlerContext) , 1, 20, TimeUnit.SECONDS);
 
-        } else if (B3 == 12) { //  0x0C 服务器发送指令
+        } else if (B3 == 12) { // 0x0C 服务器发送指令
 
             byte[] body = new byte[bytes.length-6];
             System.arraycopy(bytes, 6, body, 0, bytes.length-6);
