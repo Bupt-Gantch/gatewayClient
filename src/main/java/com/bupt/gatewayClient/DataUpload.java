@@ -43,7 +43,7 @@ public class DataUpload {
         // 01 2b 0c c4 01 04 01 63 01 00 00 03 41 43 a9 01 00 8d 15 00 10 46 4e 42 35 36 2d 5a 49 52 30 34 46 42 31 2e 32 01 00 00 00 00 00 00 00
         // 01 2b b6 6a 01 04 01 63 01 00 00 03 dd a8 92 02 00 8d 15 00 10 46 4e 42 35 36 2d 5a 49 52 30 34 46 42 31 2e 32 01 00 00 00 00 00 00 00
 //        byte[] bytes = new byte[44]{0x70, 0x1A, (byte) 0x95, 0x65, 0x01, 0x00, 0x00, 0x01, 0x0A, 0x40, 0x42, 0x10, 0x55, 0x55, 0x0C, (byte) 0xE2, 0x07, 0x01, 0x04, 0x00, 0x00, (byte) 0x83, 0x00, 0x01, 0x5B, 0x02, 0x00, (byte) 0xDB};
-        byte[] bytes = new byte[44];
+        byte[] bytes = new byte[45];
         int index = 0;
 
         bytes[index++] = 0x01;
